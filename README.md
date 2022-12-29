@@ -7,8 +7,6 @@ A Stable Diffusion app for macOS built with SwiftUI and Apple's [ml-stable-diffu
 ## Building from source
 
 1. Clone this repo
-1. Clone my fork of [ml-stable-diffusion](https://github.com/justjake/ml-stable-diffusion) into the repo.
-1. Follow the instructions to set up the ml-stable-diffusion python library.
 1. Run `./build-models.sh`. You may need to adjust the Conda setup goo in the script.
 1. Open project in Xcode and click build!
 
