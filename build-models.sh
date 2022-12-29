@@ -1,19 +1,30 @@
 #!/bin/zsh
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/opt/homebrew/Caskroom/miniconda/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh" ]; then
-        . "/opt/homebrew/Caskroom/miniconda/base/etc/profile.d/conda.sh"
-    else
-        export PATH="/opt/homebrew/Caskroom/miniconda/base/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
+CONDA_ENV = "gauss"
+
+
+function init_conda_env(){
+    CONDA_BASE=$(conda info --base)
+    source $CONDA_BASE/etc/profile.d/conda.sh
+}
+
+
+function create_env() {
+    conda create -n $CONDA_ENV python=3.8 -y
+    init_conda_env
+    conda activate $CONDA_ENV
+}
+
+
+function install_deps() {
+    git clone "https://github.com/apple/ml-stable-diffusion.git"
+    cd "ml-stable-diffusion"
+    pip install -r requirements.txt
+    pip install numpy==1.23
+    pip install torch==1.12.1
+
+}
+
 
 set -xeo pipefail
 
@@ -33,10 +44,14 @@ build() {
     -o "../$DESTINATION/$dest"
   echo "{build,$dest}"
   mv "../$DESTINATION/$dest/Resources/*" "../$DESTINATION/$dest"
-  # mv "../$DESTINATION/$dest/{build,$dest}"
 }
 
-cd ml-stable-diffusion
-# build stabilityai/stable-diffusion-2-base sd2-base
+create_env
+
+conda activate $CONDA_ENV
+
+install_deps
+
+build stabilityai/stable-diffusion-2-base sd2-base
 build CompVis/stable-diffusion-v1-4       sd1.4
 build runwayml/stable-diffusion-v1-5      sd1.5
