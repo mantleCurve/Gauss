@@ -58,7 +58,7 @@ class PreloadModelJob: ObservableTask<StableDiffusionPipeline, Never> {
 }
 
 struct GaussKernelResources {
-    let sourceCodeRoot = "/Users/jitl/src/gauss/compiled-models"
+    let sourceCodeRoot = "/Users/mithun/Projects/Gauss/compiled-models"
     
     var sourceCodeURL: URL {
         URL(filePath: sourceCodeRoot, directoryHint: .isDirectory)
@@ -194,6 +194,8 @@ class GaussKernel: ObservableObject {
                 return url
             }
         }()
+
+        print("TESTNG URRLlllll", url)
         
         let pipeline = try StableDiffusionPipeline(
             resourcesAt: url,
@@ -244,12 +246,12 @@ class GaussKernel: ObservableObject {
             stepCount: Int(job.prompt.steps),
             seed: {
                 switch job.prompt.seed {
-                case .random: return Int.random(in: 0 ... Int(UInt32.max))
-                case .fixed(let value): return value
+                case .random: return UInt32(Int.random(in: 0 ... Int(UInt32.max)))
+                case .fixed(let value): return UInt32(value)
                 }
             }(),
-            disableSafety: !job.prompt.safety,
-            guidanceScale: Float(job.prompt.guidance)
+            guidanceScale: Float(job.prompt.guidance),
+            disableSafety: !job.prompt.safety
         ) {
             sampleTimer.stop()
                 

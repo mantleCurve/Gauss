@@ -16,7 +16,6 @@ unset __conda_setup
 # <<< conda initialize <<<
 
 set -xeo pipefail
-conda activate coreml_stable_diffusion
 
 DESTINATION="compiled-models"
 
@@ -32,11 +31,12 @@ build() {
     --bundle-resources-for-swift-cli \
     --chunk-unet \
     -o "../$DESTINATION/$dest"
-  mv "../$DESTINATION/$dest/Unet.mlmodelc" "../$DESTINATION/$dest"
-  mv "../$DESTINATION/$dest/{build,$dest}"
+  echo "{build,$dest}"
+  mv "../$DESTINATION/$dest/Resources/*" "../$DESTINATION/$dest"
+  # mv "../$DESTINATION/$dest/{build,$dest}"
 }
 
 cd ml-stable-diffusion
-build stabilityai/stable-diffusion-2-base sd2-base
+# build stabilityai/stable-diffusion-2-base sd2-base
 build CompVis/stable-diffusion-v1-4       sd1.4
 build runwayml/stable-diffusion-v1-5      sd1.5
